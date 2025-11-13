@@ -8,8 +8,9 @@ router.get('/search',function(req, res, next){
 
 router.get('/search-result', function (req, res, next) {
     //searching in the database
-    let sqlquery = "SELECT name, price FROM books WHERE name LIKE ? ";
-    let keyword = [`%${req.query.search_text}%`]
+    let sqlquery = "SELECT name, price FROM books WHERE name LIKE ? "; 
+    let keyword = [`%${req.query.search_text}%`] //allow text to come before and after keyword
+    //execute sql query
     db.query(sqlquery, keyword, (err, result) => {
         if (err) {
             next(err)
@@ -51,7 +52,7 @@ router.post('/bookadded', function (req, res, next) {
 }) 
 
 router.get('/bargainbooks', function(req, res, next) {
-    let sqlquery = "SELECT * FROM books WHERE price<20"; // query database to get all the books
+    let sqlquery = "SELECT * FROM books WHERE price<20"; // query database to get books priced under 20
     // execute sql query
     db.query(sqlquery, (err, result) => {
         if (err) {
