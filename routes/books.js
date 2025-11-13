@@ -8,7 +8,17 @@ router.get('/search',function(req, res, next){
 
 router.get('/search-result', function (req, res, next) {
     //searching in the database
-    res.send("You searched for: " + req.query.keyword)
+    let sqlquery = "SELECT name, price FROM books WHERE name LIKE ? ";
+    let keyword = [`%${req.query.search_text}%`]
+    db.query(sqlquery, keyword, (err, result) => {
+        if (err) {
+            next(err)
+        }
+        else
+            //res.send("You searched for: " + req.query.search_text)
+            res.render("searchresult.ejs", {availableBooks:result})
+    })
+    
 });
 
 router.get('/list', function(req, res, next) {
@@ -40,6 +50,16 @@ router.post('/bookadded', function (req, res, next) {
     })
 }) 
 
+router.get('/bargainbooks', function(req, res, next) {
+    let sqlquery = "SELECT * FROM books WHERE price<20"; // query database to get all the books
+    // execute sql query
+    db.query(sqlquery, (err, result) => {
+        if (err) {
+            next(err)
+        }
+        res.render("bargainbooks.ejs", {availableBooks:result})
+    });
+});
 
 // Export the router object so index.js can access it
 module.exports = router
