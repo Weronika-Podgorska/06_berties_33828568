@@ -1,16 +1,29 @@
 <!doctype html>
 <html>
   <head>
-    <title>List <%=shopData.shopName%></title>
-    <link rel="stylesheet"  type="text/css" href="/main.css" />
+    <title>Users - <%= shopData.shopName %></title>
   </head>
   <body>
-    <h1><%=shopData.shopName%> Shop</h1>
+    <h1><%= shopData.shopName %> Shop</h1>
     <p>Here are the users that are registered:</p>
-    <ul>
-        <% for(let i = 0; i < availableUsers.length; i++){ %>
-            <li><%=availableUsers[i].first_name%>, <%=availableUsers[i].last_name%></li>  
-        <% } %>
-    </ul>
+
+    <table border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Username</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% availableUsers.forEach(user => { %>
+          <tr>
+            <td><%= user.first_name %></td>
+            <td><%= user.last_name %></td>
+            <td><%= user.username %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
   </body>
 </html>
