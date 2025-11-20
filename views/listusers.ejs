@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <head>
+    <title>List <%=shopData.shopName%></title>
+    <link rel="stylesheet"  type="text/css" href="/main.css" />
+  </head>
+  <body>
+    <h1><%=shopData.shopName%> Shop</h1>
+    <p>Here are the users that are registered:</p>
+    <ul>
+        <% for(let i = 0; i < availableUsers.length; i++){ %>
+            <li><%=availableUsers[i].first_name%>, <%=availableUsers[i].last_name%></li>  
+        <% } %>
+    </ul>
+  </body>
+</html>
