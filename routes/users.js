@@ -2,6 +2,7 @@
 const express = require("express")
 const bcrypt = require('bcrypt')
 const router = express.Router()
+const { check, validationResult } = require('express-validator');
 
 const redirectLogin = (req, res, next) => {
     if (!req.session.userId ) {
@@ -16,37 +17,46 @@ router.get('/register', function (req, res, next) {
     res.render('register.ejs')
 })
 
-router.post('/registered', function (req, res, next) {
-    // saving data in database
-    const saltRounds = 10
-    const plainPassword = req.body.password
-
-    bcrypt.hash(plainPassword, saltRounds, function(err, hashedPassword) {
-    // Store hashed password in your database.
-    if(err){
-        return next(err)
+router.post('/registered',
+            [check('email').isEmail(), 
+            check('username').isLength({ min: 5, max: 20})], 
+            function (req, res, next) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.render('./register')
     }
-        const sqlquery = "INSERT INTO users (username, first_name, last_name, email, hashed_password) VALUES (?, ?, ?, ?, ?)"
-        const newUser = [
-            req.body.username,
-            req.body.first,
-            req.body.last,
-            req.body.email,
-            hashedPassword
-        ]
+    else { 
+        // saving data in database
+        const saltRounds = 10
+        const plainPassword = req.body.password
+
+        bcrypt.hash(plainPassword, saltRounds, function(err, hashedPassword) {
+        // Store hashed password in your database.
+        if(err){
+            return next(err)
+        }
+            const sqlquery = "INSERT INTO users (username, first_name, last_name, email, hashed_password) VALUES (?, ?, ?, ?, ?)"
+            const newUser = [
+                req.body.username,
+                req.body.first,
+                req.body.last,
+                req.body.email,
+                hashedPassword
+            ]
+            
+            db.query(sqlquery, newUser, function(err, result) {
+                if (err) {
+                    return next(err)
+                } else {
+                    result = 'Hello '+ req.body.first + ' '+ req.body.last +' you are now registered!  We will send an email to you at ' + req.body.email
+                    result += ' Your password is: '+ req.body.password +' and your hashed password is: '+ hashedPassword
+                    res.send(result)
+                }
+            })
         
-        db.query(sqlquery, newUser, function(err, result) {
-            if (err) {
-                return next(err)
-            } else {
-                result = 'Hello '+ req.body.first + ' '+ req.body.last +' you are now registered!  We will send an email to you at ' + req.body.email
-                result += ' Your password is: '+ req.body.password +' and your hashed password is: '+ hashedPassword
-                res.send(result)
-            }
+        
         })
-    
-    
-    })
+    }
                                                                         
 }); 
 
