@@ -26,3 +26,11 @@ audit:
 - I add a log entry during the /loggedin route when the users credentials are being compared against the ones stored in the database 
 - The table stores the username of anyone attempting to login, if they succeeded or failed and the reason, the time they attmempted a login
 - I then created a new route /audit to display all the data in the table by rendering the audit.ejs file 
+
+
+restricted access:
+
+- I restricted access to the /logout route as stated in the document as the user has to be logged in first to logout
+- I restricted access to the /list route because it reveals information about users accounts so I do not want random people looking at it 
+- I restricted access to the /audit route for the same reasons as /list 
+- I restricted access to the /addbook route because I only want trusted users to be able to add data into my database 

@@ -38,7 +38,7 @@ router.post('/registered',
             const sqlquery = "INSERT INTO users (username, first_name, last_name, email, hashed_password) VALUES (?, ?, ?, ?, ?)"
             const newUser = [
                 req.body.username,
-                req.body.first,
+                req.sanitize(req.body.first),
                 req.body.last,
                 req.body.email,
                 hashedPassword
@@ -48,7 +48,7 @@ router.post('/registered',
                 if (err) {
                     return next(err)
                 } else {
-                    result = 'Hello '+ req.body.first + ' '+ req.body.last +' you are now registered!  We will send an email to you at ' + req.body.email
+                    result = 'Hello '+ req.sanitize(req.body.first) + ' '+ req.body.last +' you are now registered!  We will send an email to you at ' + req.body.email
                     result += ' Your password is: '+ req.body.password +' and your hashed password is: '+ hashedPassword
                     res.send(result)
                 }
