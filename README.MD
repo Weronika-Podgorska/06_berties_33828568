@@ -44,4 +44,8 @@ validation:
 - I added validation to the login form to limit the amount of text you can enter and to trim the input to account for users possible mistakes 
 
 
+sanitisation:
+
+- I sanitised all inputs except for password in the register form to prevent from XSS attacks (the password is not sanitised as it is needed for hashing so it has to be left plain) 
+- I sanitised all other inputs that are used for querying the database or being displayed to the user 
 

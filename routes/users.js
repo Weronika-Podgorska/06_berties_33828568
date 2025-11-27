@@ -40,10 +40,10 @@ router.post('/registered',
         }
             const sqlquery = "INSERT INTO users (username, first_name, last_name, email, hashed_password) VALUES (?, ?, ?, ?, ?)"
             const newUser = [
-                req.body.username,
+                req.sanitize(req.body.username),
                 req.sanitize(req.body.first),
-                req.body.last,
-                req.body.email,
+                req.sanitize(req.body.last),
+                req.sanitize(req.body.email),
                 hashedPassword
             ]
             
@@ -51,8 +51,8 @@ router.post('/registered',
                 if (err) {
                     return next(err)
                 } else {
-                    result = 'Hello '+ req.sanitize(req.body.first) + ' '+ req.body.last +' you are now registered!  We will send an email to you at ' + req.body.email
-                    result += ' Your password is: '+ req.body.password +' and your hashed password is: '+ hashedPassword
+                    result = 'Hello '+ req.sanitize(req.body.first) + ' '+ req.sanitize(req.body.last) +' you are now registered!  We will send an email to you at ' + req.sanitize(req.body.email)
+                    //result += ' Your password is: '+ req.body.password +' and your hashed password is: '+ hashedPassword
                     res.send(result)
                 }
             })
@@ -89,7 +89,7 @@ router.post('/loggedin',
         res.render('./login')
     }
     else {
-        const username = req.body.username;
+        const username = req.sanitize(req.body.username);
         const password = req.body.password;
 
         //query the database to compare username
@@ -123,7 +123,7 @@ router.post('/loggedin',
                     // Save user session here, when login is successful
                     req.session.userId = req.body.username;
 
-                    res.send("Login successful. Welcome back, " + user.first_name + "!");
+                    res.send("Login successful. Welcome back, " + req.sanitize(user.first_name) + "!");
                 } else {
                     res.send("Login failed: Incorrect password.");
                 }
