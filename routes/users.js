@@ -19,7 +19,10 @@ router.get('/register', function (req, res, next) {
 
 router.post('/registered',
             [check('email').isEmail(), 
-            check('username').isLength({ min: 5, max: 20})], 
+            check('username').trim().isLength({ min: 5, max: 20}),
+            check('password').trim().isLength({min: 8}),
+            check('first').trim().notEmpty(),
+            check('last').trim().notEmpty()], 
             function (req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -77,47 +80,56 @@ router.get('/login', function (req, res, next) {
 })
 
 
-router.post('/loggedin', function (req, res, next) {
-    const username = req.body.username;
-    const password = req.body.password;
+router.post('/loggedin', 
+            [check('username').trim().notEmpty().isLength({min:5, max:20}), 
+            check('password').trim().notEmpty().isLength({min:8})], 
+            function (req, res, next) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.render('./login')
+    }
+    else {
+        const username = req.body.username;
+        const password = req.body.password;
 
-    //query the database to compare username
-    const sqlquery = "SELECT * FROM users WHERE username = ?";
-    db.query(sqlquery, [username], function(err, results) {
-        if (err) return next(err);
-
-        const logAction = "INSERT INTO audit_log (username, action) VALUES (?, ?)";
-
-        if (results.length === 0) {
-            // log failed attempt with unknown username
-            db.query(logAction, [username, "login_failed_username_not_found"], (err) => {
-                if (err) console.error("Audit log insert failed:", err);
-            });
-
-            return res.send("Login failed: Username not found.");
-        }
-
-        const user = results[0];
-
-        // compare the password with hashed password 
-        bcrypt.compare(password, user.hashed_password, function(err, match) {
+        //query the database to compare username
+        const sqlquery = "SELECT * FROM users WHERE username = ?";
+        db.query(sqlquery, [username], function(err, results) {
             if (err) return next(err);
 
-            const action = match ? "login_success" : "login_failed_wrong_password";
-            db.query(logAction, [user.username, action], (err) => {
-                if (err) console.error("Audit log insert failed:", err);
-            });
+            const logAction = "INSERT INTO audit_log (username, action) VALUES (?, ?)";
 
-            if (match) {
-                // Save user session here, when login is successful
-                req.session.userId = req.body.username;
+            if (results.length === 0) {
+                // log failed attempt with unknown username
+                db.query(logAction, [username, "login_failed_username_not_found"], (err) => {
+                    if (err) console.error("Audit log insert failed:", err);
+                });
 
-                res.send("Login successful. Welcome back, " + user.first_name + "!");
-            } else {
-                res.send("Login failed: Incorrect password.");
+                return res.send("Login failed: Username not found.");
             }
+
+            const user = results[0];
+
+            // compare the password with hashed password 
+            bcrypt.compare(password, user.hashed_password, function(err, match) {
+                if (err) return next(err);
+
+                const action = match ? "login_success" : "login_failed_wrong_password";
+                db.query(logAction, [user.username, action], (err) => {
+                    if (err) console.error("Audit log insert failed:", err);
+                });
+
+                if (match) {
+                    // Save user session here, when login is successful
+                    req.session.userId = req.body.username;
+
+                    res.send("Login successful. Welcome back, " + user.first_name + "!");
+                } else {
+                    res.send("Login failed: Incorrect password.");
+                }
+            });
         });
-    });
+    }
 });
 
 router.get('/audit', redirectLogin, function (req, res, next) {

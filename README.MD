@@ -34,3 +34,14 @@ restricted access:
 - I restricted access to the /list route because it reveals information about users accounts so I do not want random people looking at it 
 - I restricted access to the /audit route for the same reasons as /list 
 - I restricted access to the /addbook route because I only want trusted users to be able to add data into my database 
+
+
+validation:
+
+- I added validation to all fields of the register form
+- I added validation to the addbook form so that the users could only add valid books into the database
+- I added validation to the search feature which helps to find books when there are spaces added at the ends of words by using .trim() and prevents someone from submitting a large input which could slow down the server 
+- I added validation to the login form to limit the amount of text you can enter and to trim the input to account for users possible mistakes 
+
+
+
