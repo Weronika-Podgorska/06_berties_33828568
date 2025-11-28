@@ -13,6 +13,18 @@ set up mysql database
 create a new database with the file create_db.sql
 run the insert_test_data.sql script to insert data into the database
 
+create a .env file locally as it in not available in the github repository 
+add the following lines exactly:
+BB_USER=berties_books_app
+BB_PASSWORD=qwertyuiop
+BB_DATABASE=berties_books
+BB_HOST=localhost
+
+then add another line: BASE_PATH=
+finish the assignment by either leaving it blank or typing /usr/440 if on the virtual machine 
+
+
+
 dotenv:
 
 - I installed the module using the command - npm install dotenv
