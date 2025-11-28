@@ -2,9 +2,11 @@
 const express = require("express")
 const router = express.Router()
 const { check, validationResult } = require('express-validator');
+require('dotenv').config();
+const BASE_PATH = process.env.BASE_PATH || '';
 const redirectLogin = (req, res, next) => {
     if (!req.session.userId ) {
-      res.redirect('/users/login') // redirect to the login page
+      res.redirect(`${BASE_PATH}/users/login`) // redirect to the login page
     } else { 
         next (); // move to the next middleware function
     } 
