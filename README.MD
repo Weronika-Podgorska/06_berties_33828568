@@ -61,3 +61,11 @@ sanitisation:
 - I sanitised all inputs except for password in the register form to prevent from XSS attacks (the password is not sanitised as it is needed for hashing so it has to be left plain) 
 - I sanitised all other inputs that are used for querying the database or being displayed to the user 
 
+
+API:
+
+I have made an API that can display the books in my apps database depending on what the user searches.
+- There is a base query of GET /api/books which returns all of the books in a JSON format 
+- There is a search query (example: GET /api/books?search=world) which allows the user to filter books by their titles
+- There is a price range filter which allows you to define the minimum price (example: GET /api/books?minprice=20) and a maximmu price (example: GET /api/books?maxprice=30) which can be used together for the full range as well (example: GET /api/books?minprice=20&maxprice=30 )
+- There is a sort parameter which allows the user to sort the books by title in alphabetical order (A-Z) (example: GET /api/books?sort=name) or by the price in ascending order (example: GET /api/books?sort=price)
