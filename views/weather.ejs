@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Weather <%=shopData.shopName%></title>
+    <link rel="stylesheet"  type="text/css" href="/main.css" />
+  </head>
+  <body>
+    <h1>Check the weather <%=shopData.shopName%></h1>
+    <form action="weather" method="POST">
+      <p>What city would you like to check the weather for?</p>
+      <input id="city-box" type="text" name="city_text">
+      <input type="submit" value="submit" >
+    </form>
+
+    <% if (weather) { %>
+        <hr>
+        <p>It is <%= weather.temp %>°C in <%= weather.name %>.</p>
+        <P>It feels like <%= weather.feels_like %>°C</P>
+        <p>Humidity: <%= weather.humidity %>%</p>
+        <p>Wind with a speed of <%= weather.wind_speed %>m/s and degree of <%=weather.wind_deg%>° </p>
+        <p></p>
+    <% } %>
+
+    <% if (error) { %>
+    <p style="color:red;"><%= error %></p>
+    <% } %>
+
+  </body>
+</html>
